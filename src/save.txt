@@ -1,0 +1,107 @@
+  constructor(config: { database: string; container: string; connectionString: string; }) {
+    this.Database = config.database;
+    this.ConnString = config.connectionString
+    this.Container = config.container
+    // Needed to check if this is working for AST
+    this.db = new TableServiceClient(this.ConnString);
+
+    this.endpoint = process.env.AZURE_TABLES_ENDPOINT;
+    this.credential = new AzureNamedKeyCredential(
+      process.env.AZURE_ACCOUNT,
+      process.env.AZURE_ACCESS_KEY
+    );
+
+    this.tableService = new TableServiceClient(
+      this.endpoint,
+      this.credential
+    );
+  }
+
+  class CustomIntegration implements IntegrationBase {
+  private readonly ConnString: string
+  private readonly Database: string
+  private readonly Container: string
+  private readonly db: TableServiceClient
+  readonly endpoint: any
+  readonly credential: any
+  readonly tableService: any
+
+
+  import { IntegrationBase } from "@budibase/types"
+import fetch from "node-fetch"
+// Importing the azure storage tables
+import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata } from "@azure/data-tables"
+
+interface Query {
+  method: string
+  body?: string
+  headers?: { [key: string]: string }
+  credential?: any
+  endpoint?: string
+}
+
+class CustomIntegration implements IntegrationBase {
+  private readonly ConnString: string
+  private readonly Database: string
+  private readonly Container: string
+  private readonly db: TableServiceClient
+
+  constructor(config: { database: string; container: string; connectionString: string; }) {
+    this.Database = config.database;
+    this.ConnString = config.connectionString
+    this.Container = config.container
+    this.db = new TableServiceClient(this.ConnString);
+  }
+
+  async request() {
+    //  Kept like this, as getting some error while processing variable from the env file
+    const endpoint = "https://storagevmxpoc01.table.core.windows.net/";
+    const credential = new AzureNamedKeyCredential(
+      "storagevmxpoc01",
+      "VhzKbYhFCFtgibkefcBZsfNG/ugmhDw4B2Mdf3iV3g/TqZIPu2cjet2nixY0LfImxCXk0nDyA/Bh+AStrcyrCw=="
+    );
+
+    const tableService = new TableServiceClient(
+      endpoint,
+      credential
+    );
+  }
+
+  async create(query: { json: object }) {
+    const opts = {
+      method: "POST",
+      body: JSON.stringify(query.json),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+    // Return statment missing
+  }
+
+  async read(query: { queryString: string }) {
+    const opts = {
+      method: "GET",
+    }
+    //  Return statment missing
+  }
+
+  async update(query: { json: object }) {
+    const opts = {
+      method: "PUT",
+      body: JSON.stringify(query.json),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+    // Return statment missing
+  }
+
+  async delete(query: { id: string }) {
+    const opts = {
+      method: "DELETE",
+    }
+    // Return statment missing
+  }
+}
+
+export default CustomIntegration
