@@ -10,11 +10,11 @@ class CustomIntegration implements IntegrationBase {
   private readonly Database: string
   // private readonly db: TableServiceClient
 
-  constructor(config: { accountKey: string; key: string; endpoint: string; }) {
+  constructor(config: { accountKey: string; key: string; endpoint: string; database: string; }) {
     this.AccountKey = config.accountKey;
     this.AccountName = config.key
     this.Endpoint = config.endpoint
-    this.Database = "vbmcustomers"
+    this.Database = config.database
   }
   // Request method to create the connection to database
   async request() {
