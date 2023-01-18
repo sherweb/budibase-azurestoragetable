@@ -55,9 +55,9 @@ class CustomIntegration implements IntegrationBase {
 
 
   // Read Entity
-  async read(query: { queryString: string }) {
+  async read(query: { partitionKey: string; rowKey: string }) {
     const conn = await this.request();
-    let result = await conn.getEntity("hometasks", "1")
+    let result = await conn.getEntity(query.partitionKey, query.rowKey)
       .catch((error) => {
         console.log(error, "Something Went Wrong")
       });
@@ -78,6 +78,7 @@ class CustomIntegration implements IntegrationBase {
   }
 
   // Delete Entity
+  //PartitionKey & RowKey are required
   async delete(query: { json: object }) {
     const conn = await this.request();
     let result = await conn.deleteEntity("hometasks", "1");

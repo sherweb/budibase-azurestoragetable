@@ -30,8 +30,13 @@
       "read": {
         "type": "fields",
         "fields": {
-          "queryString": {
-            "display": "Query string",
+          "partitionKey": {
+            "display": "Partition Key",
+            "type": "string",
+            "required": false
+          },
+          "rowKey": {
+            "display": "Row Key",
             "type": "string",
             "required": false
           }
