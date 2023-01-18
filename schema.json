@@ -21,6 +21,11 @@
         "type": "password",
         "required": true,
         "display": "Endpoint"
+      },
+      "database": {
+        "type": "string",
+        "required": true,
+        "display": "Database Name"
       }
     },
     "query": {
