@@ -1,6 +1,7 @@
 import { IntegrationBase } from "@budibase/types"
 // Importing the azure storage tables
 import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata } from "@azure/data-tables"
+import { v4 as uuidv4 } from 'uuid';
 
 // Have doubts regarding the CustomIntegration file
 class CustomIntegration implements IntegrationBase {
@@ -10,9 +11,9 @@ class CustomIntegration implements IntegrationBase {
   private readonly Database: string
   // private readonly db: TableServiceClient
 
-  constructor(config: { accountKey: string; key: string; endpoint: string; database: string; }) {
-    this.AccountKey = config.accountKey;
-    this.AccountName = config.key
+  constructor(config: { accountName: string; key: string; endpoint: string; database: string; }) {
+    this.AccountKey = config.key;
+    this.AccountName = config.accountName
     this.Endpoint = config.endpoint
     this.Database = config.database
   }
@@ -40,28 +41,59 @@ class CustomIntegration implements IntegrationBase {
     return tableClient;
   }
 
+  // Check connection
+  async conn() {
+    let conn = await this.request()
+      .catch((error) => {
+        return error
+      })
+
+    return console.log("Account Name", this.AccountName, "Account Key", this.AccountKey, "Endpoint", this.Endpoint, "Database", this.Database);
+
+  }
+
   // Create Entity
   async create(query: { json: object }) {
     const task = {
       partitionKey: "hometasks",
-      rowKey: "1",
-      description: "take out the trash",
-      dueDate: new Date(2015, 6, 20)
+      rowKey: uuidv4(),
+      ...query
     };
     const conn = await this.request();
-    let result = await conn.createEntity(task);
-    return result;
+    let result = await conn.createEntity(task)
+      .catch((error) => {
+        return error
+      })
+    return "Entity Created"
   }
 
 
   // Read Entity
-  async read(query: { partitionKey: string; rowKey: string }) {
+  async read(query: { partitionKey: string, rowKey: string }) {
     const conn = await this.request();
     let result = await conn.getEntity(query.partitionKey, query.rowKey)
       .catch((error) => {
-        console.log(error, "Something Went Wrong")
+        return error
       });
     return result;
+  }
+
+  // Read All Entities
+  async readAll() {
+    const partitionKey = "hometasks";
+    const conn = await this.request();
+
+    let entites = conn.listEntities({
+      queryOptions: { filter: odata`PartitionKey eq ${partitionKey}` }
+    });
+
+    var result: string[] = [];
+    for (const entity in entites) {
+      result.push(entity)
+    }
+
+    return result;
+
   }
 
   // Update Entity

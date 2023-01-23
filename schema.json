@@ -18,7 +18,7 @@
         "display": "Account Key"
       },
       "endpoint": {
-        "type": "password",
+        "type": "string",
         "required": true,
         "display": "Endpoint"
       },
@@ -29,8 +29,21 @@
       }
     },
     "query": {
+      "conn": {},
       "create": {
-        "type": "json"
+        "type": "fields",
+        "fields": {
+          "description": {
+            "display": "Description",
+            "type": "string",
+            "required": false
+          },
+          "dueDate": {
+            "display": "Due Date",
+            "type": "date",
+            "required": false
+          }
+        }
       },
       "read": {
         "type": "fields",
@@ -47,6 +60,7 @@
           }
         }
       },
+      "readAll": {},
       "update": {
         "type": "json"
       },
