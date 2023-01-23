@@ -3,6 +3,8 @@ import { IntegrationBase } from "@budibase/types"
 import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata } from "@azure/data-tables"
 import { v4 as uuidv4 } from 'uuid';
 
+type GenericEntity = { [key: string]: any };
+
 // Have doubts regarding the CustomIntegration file
 class CustomIntegration implements IntegrationBase {
   private readonly AccountKey: string
@@ -48,7 +50,7 @@ class CustomIntegration implements IntegrationBase {
         return error
       })
 
-    return console.log("Account Name", this.AccountName, "Account Key", this.AccountKey, "Endpoint", this.Endpoint, "Database", this.Database);
+      return console.log("Account Name", this.AccountName, "Account Key", this.AccountKey, "Endpoint", this.Endpoint, "Database", this.Database);
 
   }
 
@@ -83,12 +85,10 @@ class CustomIntegration implements IntegrationBase {
     const partitionKey = "hometasks";
     const conn = await this.request();
 
-    let entites = conn.listEntities({
-      queryOptions: { filter: odata`PartitionKey eq ${partitionKey}` }
-    });
+    let entities = conn.listEntities<GenericEntity>();
 
-    var result: string[] = [];
-    for (const entity in entites) {
+    var result: GenericEntity[] = [];
+    for await (const entity of entities) {
       result.push(entity)
     }
 
