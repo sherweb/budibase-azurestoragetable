@@ -25,25 +25,13 @@
       "database": {
         "type": "string",
         "required": true,
-        "display": "Database Name"
+        "display": "Table Name"
       }
     },
     "query": {
       "conn": {},
       "create": {
-        "type": "fields",
-        "fields": {
-          "description": {
-            "display": "Description",
-            "type": "string",
-            "required": false
-          },
-          "dueDate": {
-            "display": "Due Date",
-            "type": "date",
-            "required": false
-          }
-        }
+        "type": "json"
       },
       "read": {
         "type": "fields",
@@ -65,15 +53,12 @@
         "type": "json"
       },
       "delete": {
-        "type": "fields",
-        "fields": {
-          "id": {
-            "type": "json",
-            "required": true
-          }
-        }
+        "type": "json"
       },
-      "deleteTable": {}
+      "deleteTable": {},
+      "advancedQuery": {
+        "type": "sql"
+      }
     }
   }
 }

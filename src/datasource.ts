@@ -1,7 +1,8 @@
 import { IntegrationBase } from "@budibase/types"
 // Importing the azure storage tables
-import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata } from "@azure/data-tables"
+import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata, TableEntity } from "@azure/data-tables"
 import { v4 as uuidv4 } from 'uuid';
+
 
 type GenericEntity = { [key: string]: any };
 
@@ -50,23 +51,25 @@ class CustomIntegration implements IntegrationBase {
         return error
       })
 
-      return console.log("Account Name", this.AccountName, "Account Key", this.AccountKey, "Endpoint", this.Endpoint, "Database", this.Database);
+    return conn;
 
   }
 
   // Create Entity
-  async create(query: { json: object }) {
-    const task = {
-      partitionKey: "hometasks",
-      rowKey: uuidv4(),
-      ...query
-    };
+  async create(query: { json: TableEntity }) {
+    if (!query.json.partitionKey) {
+      throw new Error("Partition Key is Required!")
+    }
+    if (!query.json.rowKey) {
+      throw new Error("Row Key is Required!")
+    }
     const conn = await this.request();
-    let result = await conn.createEntity(task)
+    let result = await conn.createEntity<TableEntity>(query.json)
       .catch((error) => {
         return error
       })
-    return "Entity Created"
+
+    return result;
   }
 
 
@@ -82,7 +85,6 @@ class CustomIntegration implements IntegrationBase {
 
   // Read All Entities
   async readAll() {
-    const partitionKey = "hometasks";
     const conn = await this.request();
 
     let entities = conn.listEntities<GenericEntity>();
@@ -97,29 +99,50 @@ class CustomIntegration implements IntegrationBase {
   }
 
   // Update Entity
-  async update(query: { json: object }) {
-    const task = {
-      partitionKey: "hometasks",
-      rowKey: "1",
-      description: "take out the trash",
-      dueDate: new Date(2015, 6, 20)
-    };
+  async update(query: { json: TableEntity }) {
+    if (!query.json.partitionKey) {
+      throw new Error("Partition Key is Required!")
+    }
+    if (!query.json.rowKey) {
+      throw new Error("Row Key is Required!")
+    }
     const conn = await this.request();
-    let result = await conn.upsertEntity(task, "Replace");
+    let result = await conn.upsertEntity<TableEntity>(query.json);
     return result;
   }
 
   // Delete Entity
   //PartitionKey & RowKey are required
-  async delete(query: { json: object }) {
+  async delete(query: { json: TableEntity }) {
+    if (!query.json.partitionKey) {
+      throw new Error("Partition Key is Required!")
+    }
+    if (!query.json.rowKey) {
+      throw new Error("Row Key is Required!")
+    }
     const conn = await this.request();
-    let result = await conn.deleteEntity("hometasks", "1");
+    let result = await conn.deleteEntity(query.json.partitionKey, query.json.rowKey);
     return result;
   }
 
+  // Advanced Query to list the items based on the query
+  async advancedQuery(query: { queryString: string }) {
+
+    const conn = await this.request();
+    let entities = conn.listEntities({
+      queryOptions: {
+        filter: odata`${query.queryString}`
+      }
+    });
+    var result: GenericEntity[] = [];
+    for await (const entity of entities) {
+      result.push(entity)
+    }
+    return result;
+  }
 
   // Delete Table
-  async deleteTable(query: { json: object }) {
+  async deleteTable() {
     const conn = await this.request();
     // need to pass the table table
     let result = await conn.deleteTable();
