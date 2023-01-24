@@ -126,12 +126,12 @@ class CustomIntegration implements IntegrationBase {
   }
 
   // Advanced Query to list the items based on the query
-  async advancedQuery(query: { queryString: string }) {
+  async advancedQuery(query: { sql: string }) {
 
     const conn = await this.request();
     let entities = conn.listEntities({
       queryOptions: {
-        filter: odata`${query.queryString}`
+        filter: query.sql
       }
     });
     var result: GenericEntity[] = [];
