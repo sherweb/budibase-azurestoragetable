@@ -1,6 +1,6 @@
 {
   "name": "bb-ast-demo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Azure Storage Tables plugin to connect to the datasource demo",
   "main": "src/index.ts",
   "license": "MIT",

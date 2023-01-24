@@ -13,7 +13,7 @@
         "display": "Account Name"
       },
       "key": {
-        "type": "string",
+        "type": "password",
         "required": true,
         "display": "Account Key"
       },
@@ -33,7 +33,7 @@
       "create": {
         "type": "json"
       },
-      "read": {
+      "readById": {
         "type": "fields",
         "fields": {
           "partitionKey": {
@@ -48,7 +48,7 @@
           }
         }
       },
-      "readAll": {},
+      "read": {},
       "update": {
         "type": "json"
       },
