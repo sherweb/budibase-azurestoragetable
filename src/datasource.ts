@@ -74,7 +74,7 @@ class CustomIntegration implements IntegrationBase {
 
 
   // Read Entity
-  async read(query: { partitionKey: string, rowKey: string }) {
+  async readById(query: { partitionKey: string, rowKey: string }) {
     const conn = await this.request();
     let result = await conn.getEntity(query.partitionKey, query.rowKey)
       .catch((error) => {
@@ -84,7 +84,7 @@ class CustomIntegration implements IntegrationBase {
   }
 
   // Read All Entities
-  async readAll() {
+  async read() {
     const conn = await this.request();
 
     let entities = conn.listEntities<GenericEntity>();
@@ -141,13 +141,6 @@ class CustomIntegration implements IntegrationBase {
     return result;
   }
 
-  // Delete Table
-  async deleteTable() {
-    const conn = await this.request();
-    // need to pass the table table
-    let result = await conn.deleteTable();
-    return result;
-  }
 }
 
 export default CustomIntegration
