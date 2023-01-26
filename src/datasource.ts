@@ -1,19 +1,17 @@
 import { IntegrationBase } from "@budibase/types"
 // Importing the azure storage tables
 import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata, TableEntity } from "@azure/data-tables"
-import { v4 as uuidv4 } from 'uuid';
 
 
 type GenericEntity = { [key: string]: any };
 
-// Have doubts regarding the CustomIntegration file
 class CustomIntegration implements IntegrationBase {
   private readonly AccountKey: string
   private readonly AccountName: string
   private readonly Endpoint: string
   private readonly Database: string
-  // private readonly db: TableServiceClient
 
+  // private readonly db: TableServiceClient
   constructor(config: { accountName: string; key: string; endpoint: string; database: string; }) {
     this.AccountKey = config.key;
     this.AccountName = config.accountName
@@ -42,17 +40,6 @@ class CustomIntegration implements IntegrationBase {
     );
 
     return tableClient;
-  }
-
-  // Check connection
-  async conn() {
-    let conn = await this.request()
-      .catch((error) => {
-        return error
-      })
-
-    return conn;
-
   }
 
   // Create Entity
