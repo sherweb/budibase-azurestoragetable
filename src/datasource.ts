@@ -73,11 +73,11 @@ class CustomIntegration implements IntegrationBase {
         return result;
       } else {
 
-        const sql = (query.partitionKey && !query.rowKey) ? `PartitionKey eq '${query.partitionKey}'` : (!query.partitionKey && query.rowKey) ? `RowKey eq '${query.rowKey}'` : ``;
+        const q = (query.partitionKey && !query.rowKey) ? `PartitionKey eq '${query.partitionKey}'` : (!query.partitionKey && query.rowKey) ? `RowKey eq '${query.rowKey}'` : ``;
 
         let entities = conn.listEntities<GenericEntity>({
           queryOptions: {
-            filter: sql
+            filter: q
           }
         });
         var result: GenericEntity[] = [];
