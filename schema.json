@@ -3,7 +3,7 @@
   "metadata": {},
   "schema": {
     "docs": "https://docs.budibase.com",
-    "friendlyName": "Azure Storage Tables",
+    "friendlyName": "Azure Storage Table",
     "type": "Non-Relational",
     "description": "Connects to the Azure Storage Tables",
     "datasource": {

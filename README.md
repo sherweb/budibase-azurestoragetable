@@ -1,8 +1,8 @@
-# Bb-ast-demo
-This is a readme for your new Budibase plugin.
+# Budibase Azure Storage Tables Plugin
+This plugin allows you to connect to Azure Storage Tables as a datasource.
 
 # Description
-Azure Storage Tables plugin to connect to the datasource demo
+Azure Storage Tables plugin to connect to the datasourc
 
 Find out more about [Budibase](https://github.com/Budibase/budibase).
 
