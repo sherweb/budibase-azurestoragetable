@@ -1,4 +1,4 @@
-import { IntegrationBase } from "@budibase/types"
+import { IntegrationBase, Query } from "@budibase/types"
 // Importing the azure storage tables
 import { TableServiceClient, TableClient, AzureNamedKeyCredential, odata, TableEntity } from "@azure/data-tables"
 
@@ -42,6 +42,7 @@ class CustomIntegration implements IntegrationBase {
     return tableClient;
   }
 
+
   // Create Entity
   async create(query: { json: TableEntity }) {
     if (!query.json.partitionKey) {
@@ -60,18 +61,40 @@ class CustomIntegration implements IntegrationBase {
   }
 
 
-  // Read Entity
-  async readById(query: { partitionKey: string, rowKey: string }) {
+  // Read Entity, for partitionKey and rowKey with conditions
+  async read(query: { partitionKey: string, rowKey: string }) {
     const conn = await this.request();
-    let result = await conn.getEntity(query.partitionKey, query.rowKey)
-      .catch((error) => {
-        return error
-      });
-    return result;
+    try {
+      if (query.partitionKey && query.rowKey) {
+        let result = await conn.getEntity(query.partitionKey, query.rowKey)
+          .catch((error) => {
+            return error
+          })
+        return result;
+      } else {
+
+        const sql = (query.partitionKey && !query.rowKey) ? `PartitionKey eq '${query.partitionKey}'` : (!query.partitionKey && query.rowKey) ? `RowKey eq '${query.rowKey}'` : ``;
+
+        let entities = conn.listEntities<GenericEntity>({
+          queryOptions: {
+            filter: sql
+          }
+        });
+        var result: GenericEntity[] = [];
+        for await (const entity of entities) {
+          result.push(entity)
+        }
+
+        return result;
+      }
+    }
+    catch (error) {
+      return error
+    }
   }
 
   // Read All Entities
-  async read() {
+  async readAll() {
     const conn = await this.request();
 
     let entities = conn.listEntities<GenericEntity>();

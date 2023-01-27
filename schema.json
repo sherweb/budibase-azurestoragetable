@@ -33,7 +33,7 @@
       "create": {
         "type": "json"
       },
-      "readById": {
+      "read": {
         "type": "fields",
         "fields": {
           "partitionKey": {
@@ -48,7 +48,7 @@
           }
         }
       },
-      "read": {},
+      "readAll": {},
       "update": {
         "type": "json"
       },
